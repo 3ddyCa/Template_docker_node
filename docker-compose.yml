@@ -1,0 +1,12 @@
+services:
+    node:
+        container_name: service_node
+        image: app:prod
+        volumes:
+            - ./app:/usr/src/app
+        command: sh -c "npm run dev -- --host 0.0.0.0"
+        environment:
+            APP_VERSION: 2.0.0
+            MODE_ENV: production
+        ports:
+        - 3000:3000

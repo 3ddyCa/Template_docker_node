@@ -1,0 +1,16 @@
+FROM node:latest AS builder
+WORKDIR /app
+# Copiez d'abord uniquement package.json
+COPY app/package.json .
+# Installez les dÈpendances (ce layer sera cachÈ si package.json ne change pas)
+RUN npm update && npm upgrade && npm install
+# Ensuite copiez le reste des fichiers
+COPY app/ .
+# ExÈcutez le build
+RUN npm run build
+# Stage de production
+FROM nginx:alpine
+# Copiez depuis le stage builder
+COPY --from=builder /app /usr/share/nginx/html/
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
